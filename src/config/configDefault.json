@@ -1,0 +1,19 @@
+{
+    "logging": {
+        "level": "debug",
+        "filename": "conhate.log",
+        "quiet": false,
+        "overwrite": true,
+        "use_color": true,
+        "http": {
+            "enable": true,
+            "filename": "http.log"
+        }
+    },
+    "discord": {
+        "token": "YOUR TOKEN",
+        "default_prefix": {
+            "enable": false
+        }
+    }
+}

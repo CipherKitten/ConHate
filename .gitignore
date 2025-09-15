@@ -53,3 +53,12 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+#DONT LEAK A TOKEN
+src/config/configPRIVATE.json
+
+#keep out every log file
+*.log
+
+#dont include binaries
+build/*
