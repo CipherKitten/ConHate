@@ -55,10 +55,12 @@ dkms.conf
 *.dwo
 
 #DONT LEAK A TOKEN
-src/config/configPRIVATE.json
+config/configPRIVATE.json
 
 #keep out every log file
 *.log
 
 #dont include binaries
 build/*
+
+tests/testbuild/*

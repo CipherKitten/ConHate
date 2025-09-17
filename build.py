@@ -2,7 +2,7 @@ import subprocess
 import glob
 cflags = "-DCCORD_SIGINTCATCH"
 cfiles = glob.glob("./src/isrc/*.c")
-compileCommand = f"gcc {cflags} -Isrc/include ./src/main.c {' '.join(cfiles)} -o build/conhate"
+compileCommand = f"gcc {cflags} -I/opt/concord/include -L/opt/concord/lib -Isrc/include ./src/main.c {' '.join(cfiles)} -ldiscord -lcurl  -o build/conhate"
 
 def compile():
     compileCommandList = compileCommand.split()

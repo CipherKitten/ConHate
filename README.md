@@ -1,2 +1,2 @@
 # ConHate
-A highly hatable discord bot made with C and concord
+A highly hatable discord bot made with C 
