@@ -17,7 +17,7 @@ int main(){
         printf("trimend failed \n");
     }
     else{
-        printf("TRIM TEST PASSED \n");
+        printf("TRIM TEST PASSED  %s\n", totrim);
     }
     printf("«««««««««««««««« TRIM TEST END »»»»»»»»»»»»»»»»»»»»»»»»»» \n");
 

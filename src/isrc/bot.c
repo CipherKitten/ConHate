@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "../include/bot.h"
 #include <string.h>
@@ -8,7 +9,9 @@
 #include <stdbool.h>
 
 static void on_message(struct discord* client, const struct discord_message* message){
-    int messageLen = strlen(message->content);
+    if(message->author->bot) return;
+    printf("%s", message->content);
+    check_for_im(message->content, message, client);
 }
 
 /**
@@ -21,11 +24,11 @@ static void on_message(struct discord* client, const struct discord_message* mes
  * As of the writing of this comment ConHate only does this behaviour when
  * the message starts with: [im, Im, I'm, i'm]
  * */
-void check_for_im(char* message){
+void check_for_im(char* message, const struct discord_message* disc_msg, struct discord* client){
     trimstr(&message);
+
     char* ims[]= {"Im", "im", "I'm", "i'm", "IM", "I'M"};
     int imsLen = sizeof(ims)/sizeof(ims[0]);
-    
     char* imPos = NULL;
     for(int i = 0; i<imsLen; i++){
         imPos = strstr(message, ims[i]);
@@ -37,7 +40,17 @@ void check_for_im(char* message){
     }
     if(imPos == NULL) return; 
 
+    char* name = get_name_after_im(message);
+    char* reply = malloc(sizeof(char)*60);
 
+    snprintf(reply, 60, "Hi %s, Im ConHate", name);
+    
+    struct discord_create_message params = {0};
+    struct discord_ret_message ret_msg = {0};
+    params.content = reply;
+    discord_create_message(client, disc_msg->channel_id, &params, &ret_msg);
+
+    free(reply);
 }
 
 
@@ -48,12 +61,21 @@ void botMain(char* configFile){
 
     struct discord *client = discord_config_init(configFile);
     assert(client != NULL && "There was a problem creating the client");
+    
+    /* explicitly request the intents you need (bitwise OR) */
+    discord_add_intents(client,
+        DISCORD_GATEWAY_GUILDS |
+        DISCORD_GATEWAY_GUILD_MESSAGES |
+        DISCORD_GATEWAY_DIRECT_MESSAGES |
+        DISCORD_GATEWAY_MESSAGE_CONTENT
+    );
 
-    discord_add_intents(client, DISCORD_GATEWAY_MESSAGE_CONTENT | DISCORD_GATEWAY_GUILD_MESSAGES);
-
-    printf("Welcome to ConHate. An hatable discord bot built with concord");
+    printf("Welcome to ConHate. An hatable discord bot built with concord\n");
     discord_set_on_message_create(client, on_message);
     discord_run(client);
+
+    discord_cleanup(client);
+    ccord_global_cleanup();
 
 }
 
