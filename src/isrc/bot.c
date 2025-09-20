@@ -40,6 +40,9 @@ void check_for_im(char* message, const struct discord_message* disc_msg, struct 
     }
     if(imPos == NULL) return; 
 
+    if((imPos+2)[0]!= ' ' && ((imPos+1)[0] == 'm' || (imPos+1)[0] == 'M')) return;
+
+
     char* name = get_name_after_im(message);
     char* reply = malloc(sizeof(char)*60);
 
