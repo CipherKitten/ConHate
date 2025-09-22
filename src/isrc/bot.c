@@ -1,3 +1,6 @@
+#include <pthread.h>
+#include <unistd.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/bot.h"
@@ -10,8 +13,47 @@
 
 static void on_message(struct discord* client, const struct discord_message* message){
     if(message->author->bot) return;
-    printf("%s", message->content);
+
+    // TODO: make this run on a different thread
     check_for_im(message->content, message, client);
+    
+
+    // sending the meme
+    pthread_t meme_send;
+    struct default_message_work* msg = malloc(sizeof(struct default_message_work));
+    msg->client = client;
+    msg->message = message;
+    pthread_create(&meme_send, NULL, send_meme, msg);
+
+    pthread_join(meme_send, NULL);
+    free(msg);
+    
+}
+
+/**
+ * Sends a meme. As of wrtitng this comment it only sends a picture of baby jd vance.
+ *
+ * this method has a 1 in 3 chance of sending a meme and it waits 5 seconds before doing so
+ * */
+void* send_meme(void* args){
+    int fiftyfifty = rand() % 3;
+
+    printf("%i\n\n", fiftyfifty);
+
+    if(fiftyfifty < 2) return NULL;
+
+    struct default_message_work* msg = (struct default_message_work*)args;
+    const struct discord_message* message = msg->message;
+    struct discord* client = msg->client;
+
+    sleep(5);
+    struct discord_create_message params = {0};
+    struct discord_ret_message ret = {0};
+    params.content = "Le J.D. Vance[:](https://i.kym-cdn.com/photos/images/newsfeed/002/931/607/1ff)";
+    
+    discord_create_message(client, message->channel_id, &params, &ret );
+
+    return NULL;
 }
 
 /**
@@ -54,6 +96,7 @@ void check_for_im(char* message, const struct discord_message* disc_msg, struct 
     discord_create_message(client, disc_msg->channel_id, &params, &ret_msg);
 
     free(reply);
+
 }
 
 
