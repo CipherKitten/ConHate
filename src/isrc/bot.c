@@ -42,6 +42,20 @@ void* send_meme(void* args){
 
     if(fiftyfifty < 2) return NULL;
 
+<<<<<<< HEAD
+=======
+    char* links[] = {"https://i.kym-cdn.com/photos/images/newsfeed/002/931/607/1ff"};
+    int linksLen = sizeof(links)/sizeof(links[0]);
+
+    int linkIdx = rand() % linksLen;
+    int sizeOfCurrLink = strlen(links[linkIdx]);
+    int maxTextSize = 30 + sizeOfCurrLink; // 30 might be a bit over board but just in case
+
+    char* msgContent = malloc(sizeof(char) * maxTextSize);
+
+    snprintf(msgContent, maxTextSize, "Check this out[:](%s)", links[linkIdx]);
+
+>>>>>>> 06f6e5e (made it use a random meme)
     struct default_message_work* msg = (struct default_message_work*)args;
     const struct discord_message* message = msg->message;
     struct discord* client = msg->client;
@@ -49,9 +63,17 @@ void* send_meme(void* args){
     sleep(5);
     struct discord_create_message params = {0};
     struct discord_ret_message ret = {0};
+<<<<<<< HEAD
     params.content = "Le J.D. Vance[:](https://i.kym-cdn.com/photos/images/newsfeed/002/931/607/1ff)";
     
     discord_create_message(client, message->channel_id, &params, &ret );
+=======
+    params.content = msgContent;
+    
+    discord_create_message(client, message->channel_id, &params, &ret );
+    free(msgContent);
+
+>>>>>>> 06f6e5e (made it use a random meme)
 
     return NULL;
 }
